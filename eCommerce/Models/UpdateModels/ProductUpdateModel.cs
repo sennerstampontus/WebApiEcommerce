@@ -2,15 +2,13 @@
 {
     public class ProductUpdateModel
     {
-        public ProductUpdateModel(string name, string description, decimal price)
-        {
-            Name = name;
-            Description = description;
-            Price = price;
-        }
+        private string name;
+        private string description;
+        private decimal price;
 
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
+
+        public string Name { get { return name; } set { name = value; } }
+        public string Description { get { return description; } set { description = value; } }
+        public decimal Price { get { return price; } set { price = value; } }
     }
 }

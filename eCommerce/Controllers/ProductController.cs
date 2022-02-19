@@ -8,13 +8,14 @@ using eCommerce.Filters;
 using eCommerce.Models.ProductModels;
 using eCommerce.Models.CategoryModels;
 using eCommerce.Models.Entities.AnnulledEntities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace eCommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
-    
+    [Authorize]
+
     public class ProductController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -24,8 +25,8 @@ namespace eCommerce.Controllers
             _context = context;
         }
 
-        [HttpGet]       
-        //[UseUserKey]
+        [HttpGet("Products")]       
+        [UseUserKey]
 
         public async Task<ActionResult<IEnumerable<ProductOutputModel>>> GetProducts()
         {
@@ -39,7 +40,7 @@ namespace eCommerce.Controllers
 
 
         [HttpGet("{articleNumber}")]
-        //[UseUserKey]
+        [UseUserKey]
         public async Task<ActionResult<ProductOutputModel>> GetProduct(string articleNumber)
         {
             var productEntity = await _context.Products.Include(x => x.Category).FirstOrDefaultAsync(x => x.ArticleNumber == articleNumber);
@@ -54,11 +55,9 @@ namespace eCommerce.Controllers
                 new CategoryModel(productEntity.Category.Name));
         }
 
-        
-
 
         [HttpPost]
-        //[UseAdminKey]
+        [UseAdminKey]
         public async Task<ActionResult<ProductOutputModel>> CreateProduct(CreateProductModel model)
         {
             if(await _context.Products.AnyAsync(x => x.Name == model.ProductName))

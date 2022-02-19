@@ -11,6 +11,13 @@ namespace eCommerce.Models.Entities
 
         }
 
+        public OrderEntity(CustomerEntity customer, StatusEntity status)
+        {
+            Customer = customer;
+            Status = status;
+        }
+
+
         public OrderEntity(CustomerEntity customer, ICollection<OrderLineEntity> orderLine, decimal orderTotal, StatusEntity status)
         {
             Customer = customer;

@@ -30,6 +30,17 @@
             Address = address;
         }
 
+        public CustomerOutputModel(int id, string firstName, string lastName, string email, ContactOutputModel contact, AddressOutputModel address)
+        {
+            Id = id;
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            Contact = contact;
+
+            Address = address;
+
+        }
 
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -37,6 +48,8 @@
         public string Email { get; set; }
 
         public AddressOutputModel Address { get; set; }
+
+        public ContactOutputModel Contact { get; set; }
     }
 
 }

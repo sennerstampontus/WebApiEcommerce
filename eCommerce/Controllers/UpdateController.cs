@@ -3,6 +3,7 @@ using eCommerce.Filters;
 using eCommerce.Models.Entities;
 using eCommerce.Models.UpdateModels;
 using eCommerce.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace eCommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UpdateController : ControllerBase
     {
 
@@ -22,7 +24,8 @@ namespace eCommerce.Controllers
         }
 
         [HttpPut("Customer/{id}")]
-        public async Task<IActionResult> PutCustomer(int id, UserUpdateModel model)
+        [UseUserKey]
+        public async Task<IActionResult> UpdateCustomer(int id, UserUpdateModel model)
         {
 
             var customerEntity = await _context.Customers.FindAsync(id);
@@ -65,9 +68,45 @@ namespace eCommerce.Controllers
             return Ok($"Updates:\n{customerEntity.FirstName}\n {customerEntity.LastName}\n {customerEntity.Email}\n Updated at: {DateTime.Now}");
         }
 
+        [HttpPut("Customer/Contact/{id}")]
+        [UseUserKey]
+        public async Task<IActionResult> UpdateCustomerContact(int id, ContactUpdateModel model)
+        {
+
+            var customerEntity = await _context.Customers.Where(x => x.Id == id).Include(x => x.Contact).FirstOrDefaultAsync();
+
+
+            if (customerEntity == null)
+                return NotFound();
+
+            if (model.Phone == "")
+                customerEntity.Contact.Phone = customerEntity.Contact.Phone;
+            else
+                customerEntity.Contact.Phone = model.Phone;
+
+            if (model.PhoneWork == "")
+                customerEntity.Contact.PhoneWork = customerEntity.Contact.PhoneWork;
+            else
+                customerEntity.Contact.PhoneWork = model.PhoneWork;
+
+            if (model.Organization == "")
+                customerEntity.Contact.Organization = customerEntity.Contact.Organization;
+            else
+                customerEntity.Contact.Organization = model.Organization;
+
+            var contact = new ContactEntity(customerEntity.Contact.Phone, customerEntity.Contact.PhoneWork, customerEntity.Contact.Organization);
+
+            _context.Entry(customerEntity.Contact).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+
+            return Ok($"Updates:\nPhone: {contact.Phone}\nPhone Work: {contact.PhoneWork}\nOrganization: {contact.Organization}");
+        }
+
 
         [HttpPut("Admin/{id}")]
-        public async Task<IActionResult> PutAdmin(int id, UserUpdateModel admin)
+        [UseAdminKey]
+        public async Task<IActionResult> UpdateAdmin(int id, UserUpdateModel admin)
         {
             var adminEntity = await _context.Admins.FindAsync(id);
             if (id != adminEntity.Id)
@@ -107,20 +146,37 @@ namespace eCommerce.Controllers
         }
 
         [HttpPut("Product/{articleNumber}")]
-        //[UseAdminKey]
-        public async Task<IActionResult> PutProductEntity(string articleNumber, ProductUpdateModel model)
+        [UseAdminKey]
+        public async Task<IActionResult> UpdateProduct(string articleNumber, ProductUpdateModel model)
         {
             var productEntity = await _context.Products.FindAsync(articleNumber);
-            if (articleNumber != productEntity.ArticleNumber)
+            if(productEntity == null)
+            {
+                return NotFound();
+            }
+            else if (articleNumber != productEntity.ArticleNumber)
             {
                 return BadRequest();
             }
-
             
+            if(string.IsNullOrEmpty(model.Name))
+                productEntity.Name = productEntity.Name;
 
-            productEntity.Name = model.Name;
-            productEntity.Description = model.Description;
-            productEntity.Price = model.Price;
+            else
+                productEntity.Name = model.Name;
+
+            if (string.IsNullOrEmpty(model.Description))
+                productEntity.Description = productEntity.Description;
+
+            else
+                productEntity.Description = model.Description;
+
+            if (model.Price == 0)
+                productEntity.Price = productEntity.Price;
+
+            else
+                productEntity.Price = model.Price;
+
             productEntity.UpdatedDate = DateTime.Now;
 
             _context.Entry(productEntity).State = EntityState.Modified;
@@ -145,7 +201,8 @@ namespace eCommerce.Controllers
         }
 
         [HttpPut("Order/{id}")]
-        public async Task<IActionResult> PutOrderEntity(int id, OrderUpdateModel model)
+        [UseAdminKey]
+        public async Task<IActionResult> UpdateOrder(int id, OrderUpdateModel model)
         {
             var _status = await _context.Statuses.FindAsync(model.StatusId);
 

@@ -15,6 +15,12 @@ namespace eCommerce.Data
         {
         }
 
+        //protected override void OnModelCreating(ModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<OrderLineEntity>()
+        //        .HasKey(e => new { e.Id, e.OrderId }).IsClustered(true);
+        //}
+
         public DbSet<AdminEntity> Admins { get; set; }
         public DbSet<AddressEntity> Addresses { get; set; }
         public DbSet<ContactEntity> Contacts { get; set; }

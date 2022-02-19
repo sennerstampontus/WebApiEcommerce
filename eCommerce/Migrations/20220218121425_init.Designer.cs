@@ -12,7 +12,7 @@ using eCommerce.Data;
 namespace eCommerce.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220216132539_init")]
+    [Migration("20220218121425_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -291,6 +291,8 @@ namespace eCommerce.Migrations
                         .HasColumnType("money");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Id");
 
                     b.HasIndex("OrderId");
 

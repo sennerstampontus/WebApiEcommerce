@@ -17,7 +17,7 @@ namespace eCommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class AdminController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -28,7 +28,7 @@ namespace eCommerce.Controllers
         }
 
         [HttpGet]
-        //[UseAdminKey]
+        [UseAdminKey]
         public async Task<ActionResult<IEnumerable<AdminOutputModel>>> GetAdmins()
         {
             var _admins = new List<AdminOutputModel>();
@@ -41,6 +41,7 @@ namespace eCommerce.Controllers
         }
 
         [HttpGet("{id}")]
+        [UseAdminKey]
         public async Task<ActionResult<AdminOutputModel>> GetAdmin(int id)
         {
             var adminEntity = await _context.Admins.FindAsync(id);

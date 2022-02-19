@@ -1,8 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace eCommerce.Models.Entities
 {
+    [Index(nameof(Id), IsUnique = false)]
+
     public class OrderLineEntity
     {
 
@@ -21,10 +24,22 @@ namespace eCommerce.Models.Entities
             LinePrice = linePrice;
         }
 
-        [Key]
+        public OrderLineEntity(int orderId, string productArticleNumber, string productName, decimal productPrice, int amount, decimal linePrice)
+        {
+            OrderId = orderId;
+            ProductArticleNumber = productArticleNumber;
+            ProductName = productName;
+            ProductPrice = productPrice;
+            Amount = amount;
+
+            LinePrice = linePrice;
+        }
+
+
+        //[Key]
         public int Id { get; set; }
 
-        [Required, ForeignKey("Order")]
+        
         public int OrderId { get; set; }
         public OrderEntity Order { get; set; }
 

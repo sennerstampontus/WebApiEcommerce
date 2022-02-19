@@ -245,6 +245,11 @@ namespace eCommerce.Migrations
                 column: "StatusId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrdersLine_Id",
+                table: "OrdersLine",
+                column: "Id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OrdersLine_OrderId",
                 table: "OrdersLine",
                 column: "OrderId");

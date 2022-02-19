@@ -11,6 +11,14 @@ namespace eCommerce.Models.Entities
             Organization = organization;
         }
 
+        public ContactEntity(int id, string phone, string phoneWork, string organization)
+        {
+            Id = id;
+            Phone = phone;
+            PhoneWork = phoneWork;
+            Organization = organization;
+        }
+
         [Key]
         public int Id { get; set; }
         public string Phone { get; set; }

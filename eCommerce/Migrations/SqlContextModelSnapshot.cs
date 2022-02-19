@@ -290,6 +290,8 @@ namespace eCommerce.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id");
+
                     b.HasIndex("OrderId");
 
                     b.ToTable("OrdersLine");

@@ -1,5 +1,7 @@
 ﻿using eCommerce.Data;
+using eCommerce.Filters;
 using eCommerce.Models.Entities.AnnulledEntities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +10,7 @@ namespace eCommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DeleteController : ControllerBase
     {
 
@@ -19,6 +22,7 @@ namespace eCommerce.Controllers
         }
 
         [HttpDelete("Customer/{id}")]
+        [UseAdminKey]
         public async Task<IActionResult> DeleteCustomer(int id)
         {
             var customerEntity = await _context.Customers.FindAsync(id);
@@ -54,6 +58,7 @@ namespace eCommerce.Controllers
 
 
         [HttpDelete("Admin/{id}")]
+        [UseAdminKey]
         public async Task<IActionResult> DeleteAdmin(int id)
         {
             var adminEntity = await _context.Admins.FindAsync(id);
@@ -85,7 +90,7 @@ namespace eCommerce.Controllers
 
 
         [HttpDelete("Product/{articleNumber}")]
-        //[UseAdminKey]
+        [UseAdminKey]
         public async Task<IActionResult> DeleteProduct(string articleNumber)
         {
             var productEntity = await _context.Products.FindAsync(articleNumber);
@@ -120,6 +125,7 @@ namespace eCommerce.Controllers
 
 
         [HttpDelete("Order/{id}")]
+        [UseAdminKey]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var orderEntity = await _context.Orders.FindAsync(id);

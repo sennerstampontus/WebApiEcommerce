@@ -18,7 +18,7 @@ namespace eCommerce.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class CustomerController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -29,7 +29,7 @@ namespace eCommerce.Controllers
         }
 
         [HttpGet]
-        //[UseCustomerKey]
+        [UseAdminKey]
         public async Task<ActionResult<IEnumerable<CustomerOutputModel>>> GetCustomers()
         {
             var _customers = new List<CustomerOutputModel>();
@@ -43,19 +43,25 @@ namespace eCommerce.Controllers
         }
 
         [HttpGet("{id}")]
+        [UseUserKey]
         public async Task<ActionResult<CustomerOutputModel>> GetCustomer(int id)
         {
-            var customerEntity = await _context.Customers.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
+            var customerEntity = await _context.Customers.Include(x => x.Address).Include(x => x.Contact).FirstOrDefaultAsync(x => x.Id == id);
            
 
             if (customerEntity == null)
             {
                 return NotFound();
             }
-
-            return 
-                new CustomerOutputModel(customerEntity.Id, customerEntity.FirstName, customerEntity.LastName, customerEntity.Email, 
-                new AddressOutputModel(customerEntity.Address.StreetName, customerEntity.Address.PostalCode, customerEntity.Address.City, customerEntity.Address.Country));
+            
+            if(customerEntity.Contact == null)
+                   return 
+                    new CustomerOutputModel(customerEntity.Id, customerEntity.FirstName, customerEntity.LastName, customerEntity.Email, 
+                    new AddressOutputModel(customerEntity.Address.StreetName, customerEntity.Address.PostalCode, customerEntity.Address.City, customerEntity.Address.Country));
+            else
+                return
+                    new CustomerOutputModel(customerEntity.Id, customerEntity.FirstName, customerEntity.LastName, customerEntity.Email, new ContactOutputModel(customerEntity.Contact.Phone, customerEntity.Contact.PhoneWork, customerEntity.Contact.Organization),
+                    new AddressOutputModel(customerEntity.Address.StreetName, customerEntity.Address.PostalCode, customerEntity.Address.City, customerEntity.Address.Country));
         }
     }
 }

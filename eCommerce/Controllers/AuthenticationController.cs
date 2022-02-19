@@ -50,12 +50,6 @@ namespace eCommerce.Controllers
 
 
             return Ok();
-
-
-            //return CreatedAtAction("GetCustomer", new { id = customerEntity.Id },
-            //    new CustomerOutputModel(
-            //    customerEntity.Id, customerEntity.FirstName, customerEntity.LastName, customerEntity.Email,
-            //    new AddressModel(customerEntity.Address.StreetName, customerEntity.Address.PostalCode, customerEntity.Address.City, customerEntity.Address.Country)));
         }
 
         [HttpPost("SignInCustomer")]
